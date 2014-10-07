@@ -1,4 +1,6 @@
-middleware_mds_v1
-=================
+MDS 1.x
+=======
 
-Version 1.x mds. Maintenance updates only.
+This repository contains maintenance code for the version 1 series of the Sana 
+middleware layer, mds, beginning with version 1.2. All future versions of mds
+will be released from code in the sana.mds repository.

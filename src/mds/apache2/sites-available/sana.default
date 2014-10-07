@@ -1,0 +1,66 @@
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    #ServerName example.org
+    DocumentRoot /var/www
+    
+    <Directory />
+        Options FollowSymLinks
+        AllowOverride None
+        #Order allow,deny
+        #Deny from all
+    </Directory>
+    
+    <Directory /var/www>
+        Options MultiViews Indexes FollowSymLinks
+        Order allow,deny
+        allow from all
+    </Directory>
+
+    ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+    <Directory /usr/lib/cgi-bin>
+        AllowOverride None
+        Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+        Order allow,deny
+        Allow from all
+    </Directory>
+
+    # Logging section
+    LogLevel warn
+    ErrorLog /var/log/apache2/error.log
+    CustomLog /var/log/apache2/access.log combined
+
+    ####################################################################
+    # OpenMRS section - Uses proxy ajp
+    ####################################################################
+    ProxyRequests Off
+    ProxyPreserveHost Off
+    ProxyStatus Off
+    ProxyPass /openmrs ajp://localhost:8009/openmrs
+    ProxyPassReverse /openmrs ajp://localhost:8009/openmrs
+    <Location "/openmrs">
+        Order allow,deny
+        Allow from all
+    </Location>
+
+    ####################################################################
+    # MDS Section - Uses WSGI
+    ####################################################################
+    Alias /mds/media/ /opt/sana/media/
+    Alias /mds/static/ /opt/sana/static/
+    
+    <Directory /opt/sana/static>
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+    <Directory /opt/sana/media>
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+    WSGIScriptAlias /mds /opt/sana/apache/django.wsgi
+    <Directory /opt/sana/apache>
+        Order deny,allow
+        Allow from all
+    </Directory>
+</VirtualHost>

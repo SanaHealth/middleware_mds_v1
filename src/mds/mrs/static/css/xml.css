@@ -1,0 +1,45 @@
+body
+{
+    background-color:#ffffff;
+    margin: auto;
+}
+.table
+{
+    width:100%;
+}
+.header
+{
+    background-color:#e5eecc;
+    width:100%;
+    height: 64px;
+}
+.content
+{
+    background-color:#ffffff;
+}
+.tools
+{
+    width:100%;
+    background-color:#e5eecc;
+    color:#000000;
+    valign: top;
+    height: 400px;
+    padding: 3px 8px 3px 5px;
+    spacing: 3px 3px 3px 3px;
+}
+
+.footer
+{
+    valign: center;
+    text-align: center;
+    colspan: 2;
+}
+.code
+{
+    border:1px solid #c3c3c3;
+    width:100%;
+    height:400px;
+    background-color:#ffffff;
+    color:#000000;
+    valign: top;   
+}

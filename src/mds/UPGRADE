@@ -1,0 +1,53 @@
+This file contains intructions for upgrading a server with Sana installed.
+
+Requires Ubuntu 12.04 LTS
+
+Upgrade instructions.
+Everything as root(sudo)
+1.  Install new packages
+    apt-get install libapache2-mod-wsgi
+    apt-get install python-xml2
+    apt-get install python-lxml
+    a2enmod wsgi
+
+2.  Move apache site files in ./config/etc/apache2 to /etc/apache2/sites-available
+    a2ensite sana.default
+    a2ensite sana.default.ssl
+    service apache2 restart
+    Note: If you have existing site configs of the same name and would like to 
+    preserve them, just change the name of the *.default* configs included
+    when copying and running the a2ensite commands. You should disable any 
+    previous site configs you preserve with a2dissite.
+
+3.  Move contents of ./* to /opt/sana
+    (Will overwrite existing installations)
+    a. Update file ownership
+       chown -R www-data:www-data /opt/sana
+
+4.  Update the admin files for the currently installed Django version
+    a. Copy the up to date django.contrib.admin media js, css, and img
+       files located in /usr/share/pyshared/django/contrib/admin/media to
+       the /opt/sana/media/admin directory-the css, js, and img directories.
+    a. Update file ownership
+       chown -R www-data:www-data /opt/sana/media/admin
+
+5.  If Upgrading from Sana 1.x 
+    OpenMRS Administration --> Manage Modules
+    a. Remove Sana module
+    b. Remove MediaViewer module
+    c. Remove REST module
+
+6.  OpenMRS Upgrade, install latest 1.9 release, 1.9.3 as of 07-30-2013
+
+7.  OpenMRS Administration --> Manage Modules 
+    a. Remove any previously installed Sana modules
+    b. Remove "Rest Web Services Extension 1.9" version 1.0.29298 if installed
+    c. Update "Rest Web Services" version 1.x to version > 2.1.bac64f
+    d. Add/Update HTMLFormEntry
+    e. Add LogManager
+    f. Install the Sana module with REST-2.x in the name.
+    (You may be able to just hit the update buttons for any others already
+    on the server).
+
+
+

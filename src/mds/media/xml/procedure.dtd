@@ -1,0 +1,100 @@
+<!ELEMENT Procedure (Page+)>
+<!-- Set of instructions for decision support and data collection -->
+<!ATTLIST Procedure title CDATA #REQUIRED>
+<!-- A universally unique descriptor -->
+<!ATTLIST Procedure author CDATA #IMPLIED>
+<!-- Suggested but not required -->
+<!ATTLIST Procedure version CDATA #IMPLIED>
+<!-- Place holder for beta features --> 
+
+<!ELEMENT Page (ShowIf?, Element+)>
+<!-- Represents a grouping of Elements to display on a single screen --> 
+<!ATTLIST Page id CDATA #IMPLIED>
+<!-- Place holder for beta features --> 
+
+<!ELEMENT ShowIf (Criteria | and | or | not )>
+<!-- Indicates a constraint on whether page displays.-->
+
+<!ELEMENT Criteria (#PCDATA)>
+<!-- Describes a comparison operator -->
+<!ATTLIST Criteria type (EQUALS | GREATER | LESS) #REQUIRED>
+<!-- Describes comparison operator  -->
+<!ATTLIST Criteria id CDATA #REQUIRED>
+<!-- id is a reference to an Element element -->
+<!ATTLIST Criteria value CDATA #REQUIRED>
+<!-- Literal to compare against-->
+
+<!ELEMENT and (Criteria | (and | or | not))+>
+<!-- Conjunction operator. Requires two or more operands -->
+
+<!ELEMENT or (Criteria | (and | or | not))+>
+<!-- Disjunction operator. Requires two or more operands -->
+
+<!ELEMENT not (Criteria | (and | or | not))>
+<!-- Negation operator. Unary. -->
+
+<!ELEMENT Element (help?, choices?)>
+<!--Instruction step within the Procedure -->
+<!ATTLIST Element id CDATA #REQUIRED>
+<!-- must be unique within all Pages of the Procedure-->
+<!ATTLIST Element type (TEXT | ENTRY | SELECT | PATIENT_ID | MULTI_SELECT | 
+RADIO | IMAGE | PICTURE | SOUND | BINARYFILE | INVALID | GPS | TIME | DATE | 
+EDUCATION_RESOURCE | PLUGIN | PLUGIN_ENTRY)  #REQUIRED>
+<!-- A combination of UI hint and data type description -->
+<!ATTLIST Element concept CDATA #REQUIRED>
+<!-- Annotation which provides context for the data -->
+<!ATTLIST Element question CDATA #REQUIRED>
+<!-- Prompt or instruction for end user -->
+<!ATTLIST Element answer CDATA #IMPLIED>
+<!-- The default value -->
+<!ATTLIST Element figure CDATA #IMPLIED>
+<!-- image hint displayed on screen --> 
+<!ATTLIST Element audio CDATA #IMPLIED>
+<!-- audio prompt --> 
+<!ATTLIST Element required (true | false) #IMPLIED>
+<!-- "" or null value assumed false. --> 
+<!ATTLIST Element helpText CDATA #IMPLIED>
+<!-- helpText displayed when true and answer is empty --> 
+<!ATTLIST Element choices CDATA #IMPLIED>
+<!-- Comma separated options for RADIO | SELECT | MULTI_SELECT  -->
+<!ATTLIST Element action CDATA #IMPLIED>
+<!-- Android action string type = PLUGIN* --> 
+<!ATTLIST Element mimeType CDATA #IMPLIED>
+<!-- mime type for Element type = PLUGIN* --> 
+<!ATTLIST Element numeric (NONE | DIALPAD | DECIMAL | INTEGER | SIGNED) #IMPLIED>
+<!-- soft keyboard styling type = ENTRY--> 
+<!ATTLIST Element appearance CDATA #IMPLIED>
+<!-- Styles question --> 
+<!ATTLIST Element alert CDATA #IMPLIED>
+<!-- Place holder to replace helpText --> 
+<!ATTLIST Element help CDATA #IMPLIED>
+<!-- Place holder  --> 
+<!ATTLIST Element hint CDATA #IMPLIED>
+<!-- Place holder to replace figure --> 
+<!ATTLIST Element bind CDATA #IMPLIED>
+<!--Element id to read a value from(not bi-directional -->
+
+<!ELEMENT help (name, description?, value?, src?, mediatype?)>
+<!--Additional information resource for this procedure step --> 
+<!ELEMENT name (#PCDATA)>
+<!-- Short name --> 
+<!ELEMENT description (#PCDATA)>
+<!-- Slightly longer narrative text --> 
+<!ELEMENT value (#PCDATA)>
+<!-- Can use to in-line html --> 
+<!ELEMENT src (#PCDATA)>
+<!-- path to file resource or uri --> 
+<!ELEMENT mediatype (#PCDATA)>
+<!-- The data type, defaults to text/plain --> 
+
+<!ELEMENT choices (item+)>
+<!-- Place holder to replace csv 'choices' attribute -->
+<!ELEMENT item (value, label?)>
+<!-- Place holder to replace csv 'choices' attribute items -->
+<!ELEMENT value (#PCDATA)>
+<!-- The value from selecting this item. Default display text -->
+<!ELEMENT label (#PCDATA)>
+<!-- Alternate display text for the label or media resource. -->
+
+
+

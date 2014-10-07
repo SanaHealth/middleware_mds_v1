@@ -1,0 +1,8 @@
+<table>
+    {% for item in error_list %}
+    <tr>
+            <td style="white-space:nowrap;color:red" >Line {{ item.line }}</td>
+            <td style="padding:0 0 0 5">{{ item.message }}</td>
+    </tr>
+    {% endfor %}
+<table>

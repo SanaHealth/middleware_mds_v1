@@ -20,13 +20,18 @@ from sana.mrs.util import enable_logging
 from sana.api.forms import *
 from django.template import RequestContext
 
-dtd = etree.DTD(file=file(settings.PROCEDURE_DTD,'r+b'))
+dtd = None
+
+try:
+    dtd = etree.DTD(file=file(settings.PROCEDURE_DTD,'r+b'))
+except:
+    logging.error("Procedure DTD file does not exist")
 
 class XMLValidationHandler(BaseHandler):
     allowed_methods = ('GET', 'POST')
     model = Procedure
     exclude = ('created', 'modified',)
-    
+
     #@validate
     def create(self,request):#,*args,**kwargs):
         msg = dict(request.POST)
@@ -39,15 +44,15 @@ class XMLValidationHandler(BaseHandler):
                     return "..........ok!"
                 else:
                     error_list = [ { 'line': x[1],'message':x[6] } for x in [ str(y).split(":") for y in list(dtd.error_log)]]
-                    return render_to_response("xml/errors.html", 
+                    return render_to_response("xml/errors.html",
                                              {'error_list': error_list})
             except etree.LxmlError as e:
                 l = [x for x in str(e.message).split(",")] if (e.message and len(e.message)) > 0  else [u"Empty line",u"Add text", u"1", ]
-                return render_to_response("xml/errors.html", 
+                return render_to_response("xml/errors.html",
                                          {'error_list': [ {'line': l[2].strip("line "), "message": l[0] + ", " +l[1]}]})
         except:
             return  sys.exc_info()
-            
+
     @enable_logging
     def read(self,request, uuid=None, m=None):
         query = dict(request.GET)
@@ -64,19 +69,19 @@ class XMLValidationHandler(BaseHandler):
                 return  modelform_factory(self.model)
         except:
             return "FAIL"
-        return "??????????"            
+        return "??????????"
 
 class ManifestHandler(BaseHandler):
     allowed_methods = ('GET', 'POST')
     model = Procedure
     exclude = ('created', 'modified',)
-    
+
     #@validate
     def create(self,request,*args,**kwargs):
         pass
-    
-    
-    
+
+
+
     def read(self,request, uuid=None):
         try:
             if not uuid:
@@ -93,24 +98,24 @@ class ManifestHandler(BaseHandler):
 
 
 class BaseDispatchHandler(BaseHandler):
-    """ 
-       Base handler for api model objects following basic CRUD approach using 
+    """
+       Base handler for api model objects following basic CRUD approach using
        django-piston api. Extending classes must specify:
-       
+
            model
                Sana api model class
            v_form
                ModelForm used for validating
-               
+
        Additionally, extending classes may specify:
-           
+
            allowed_methods
                CRUD methods which will be accepted
     """
-    
+
     @validate('POST')
     def create(self,request):
-        """ POST request method. 
+        """ POST request method.
             Parameters:
                 request
                     a form based http POST request
@@ -119,7 +124,7 @@ class BaseDispatchHandler(BaseHandler):
         return render_to_response("sanctuary/form.html",
                                   {'form':request.form },
                                   RequestContext(request))
-        
+
     @validate('GET')
     def read(self,request, *args, **kwargs):
         """ GET request method for retrieving existing records.
@@ -141,7 +146,7 @@ class BaseDispatchHandler(BaseHandler):
                 form = form_klass(instance=object)
             else:
                 form = form_klass()
-            return render_to_response("form.html", 
+            return render_to_response("form.html",
                                       {'form':form },
                                       context_instance=context)
         except:
@@ -149,10 +154,10 @@ class BaseDispatchHandler(BaseHandler):
             # debugging prints remove prior to release
             #for t in traceback.format_tb(tb):
             # Return empty form
-            return render_to_response("form.html", 
+            return render_to_response("form.html",
                                       {'form':request.form },
                                       context_instance=context)
-        
+
     @validate('PUT')
     def update(self,request):
         """ PUT request method for updating existing records.
@@ -160,10 +165,10 @@ class BaseDispatchHandler(BaseHandler):
                 request
                     an http PUT request
         """
-        return render_to_response("form.html", 
+        return render_to_response("form.html",
                                   {'form':request.form },
                                   RequestContext(request))
-    
+
     @validate('DELETE')
     def delete(self,request, *args):
         """ DELETE request method for deleting existing records.
@@ -173,20 +178,20 @@ class BaseDispatchHandler(BaseHandler):
                 args
                     placeholder for slug used to identify record
         """
-        return render_to_response("form.html", 
+        return render_to_response("form.html",
                                   {'form':request.form },
                                   RequestContext(request))
 
-    
+
 class RequestLogHandler(BaseDispatchHandler):
     allowed_methods = ('GET')
     model = RequestLog
     v_form = RequestLogForm
-    
+
     #@validate('GET')
     #def read(self, request, page):
-#	return self.request(page=page)
-    
+#   return self.request(page=page)
+
     def read(self, request, *args, **kwargs):
 
         query = dict(request.GET.items())
@@ -198,26 +203,26 @@ class RequestLogHandler(BaseDispatchHandler):
         log_count = log_list.count()
         page_count = int( log_count / page_size) + 1
         if log_count > page_size:
-            page_range = range(1, page_count) if page_count > 1 else range (0,1) 
+            page_range = range(1, page_count) if page_count > 1 else range (0,1)
             object_list = log_list[((page-1)*page_size):page*page_size ]
         else:
             page_range = range(0,1)
             object_list = log_list
-        return render_to_response('logging/index.html', 
-				 {'object_list': object_list,
-				  'page_range': page_range,
-				  'page_size': page_size,
-				  'page': page }) 
+        return render_to_response('logging/index.html',
+                 {'object_list': object_list,
+                  'page_range': page_range,
+                  'page_size': page_size,
+                  'page': page })
 
 class RequestLogTableHandler(BaseDispatchHandler):
     allowed_methods = ('GET')
     model = RequestLog
     v_form = RequestLogForm
-    
+
     #@validate('GET')
     #def read(self, request, page):
-#	return self.request(page=page)
-    
+#   return self.request(page=page)
+
     def read(self, request, *args, **kwars):
         query = dict(request.GET.items())
         page_size = int(query.get('page_size', 20))
@@ -226,15 +231,15 @@ class RequestLogTableHandler(BaseDispatchHandler):
         log_list = RequestLog.objects.all().order_by('-timestamp')
         log_count = log_list.count()
         page_count = int( log_count / page_size) + 1
-        
+
         if log_count > page_size:
             page_range = range(1, page_count) if page_count > 1 else range (0,1)
             object_list = log_list[((page-1)*page_size):page*page_size ]
         else:
             page_range = range(0,1)
-            object_list = log_list        
-        return render_to_response('logging/list.html', 
-				 {'object_list': object_list,
-				  'page_range': page_range,
-				  'page_size': page_size,
-				  'page': page,}) 
+            object_list = log_list
+        return render_to_response('logging/list.html',
+                 {'object_list': object_list,
+                  'page_range': page_range,
+                  'page_size': page_size,
+                  'page': page,})

@@ -4,8 +4,7 @@
 :Authors: Sana dev team
 :Version: 1.1
 """
-
-from django.conf.urls.defaults import patterns, url, include
+from django.conf.urls import patterns, url, include
 
 # Comment the next two lines to disable the default admin:
 from django.contrib import admin
@@ -14,11 +13,11 @@ admin.autodiscover()
 from piston.resource import Resource
 
 from sana.mrs.models import RequestLog
-from sana.api.handlers import ( 
-        RequestLogHandler, 
+from sana.api.handlers import (
+        RequestLogHandler,
         RequestLogTableHandler,
-        XMLValidationHandler, 
-) 
+        XMLValidationHandler,
+)
 log_resource = Resource(RequestLogHandler)
 logtable_resource = Resource(RequestLogTableHandler)
 xml_validator = Resource(XMLValidationHandler)
@@ -103,10 +102,10 @@ urlpatterns = patterns(
         'sana.mrs.json.eventlog_submit',
         name="sana-json-eventlog-submit"),
 
-    #Manila Branch  saved procedure syncing    
+    #Manila Branch  saved procedure syncing
     #url(r'^json/saved_procedure/(?P<id>[0-9-]+)/$',
     #    'sana.mrs.json.saved_procedure_get',
-    #    name="sana-json-saved-procedure-get"),        
+    #    name="sana-json-saved-procedure-get"),
 
     #url(r'^json/sync_encounters/(?P<patient_id>[0-9-]+)/$',
     #    'sana.mrs.json.syc_encounters',
@@ -115,7 +114,7 @@ urlpatterns = patterns(
     #url(r'^json/sync_encounters/(?P<patient_id>[0-9-]+)/(?P<encounters>[0-9:-]+)$',
     #    'sana.mrs.json.syc_encounters',
     #    name="sana-json-encounters-sync"),
-        
+
 
     # LOGGING
 
@@ -139,16 +138,16 @@ urlpatterns = patterns(
     url(r'^p/$',
         xml_validator,
         name='procedure-item'),
-    
+
    url(r'^log/$',
         log_resource,
         name="log-view"),
- 
+
 
    url(r'^log/list/$',
             logtable_resource,
             name="log-list"),
-                              
+
     url(r'^log/(?P<uuid>[^/]+)/$',
             log_resource,
             name="requestlog"),

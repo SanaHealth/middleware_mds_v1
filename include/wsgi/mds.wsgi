@@ -1,5 +1,3 @@
-# :Version: 1.1
-# :Author: Sana Development Team
 import os
 import sys
 

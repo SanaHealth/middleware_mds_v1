@@ -2,14 +2,14 @@
     ServerAdmin webmaster@localhost
     #ServerName example.org
     DocumentRoot /var/www
-    
+
     <Directory />
         Options FollowSymLinks
         AllowOverride None
         #Order allow,deny
         #Deny from all
     </Directory>
-    
+
     <Directory /var/www>
         Options MultiViews Indexes FollowSymLinks
         Order allow,deny
@@ -47,7 +47,7 @@
     ####################################################################
     Alias /mds/media/ /opt/sana/media/
     Alias /mds/static/ /opt/sana/static/
-    
+
     <Directory /opt/sana/static>
         Order deny,allow
         Allow from all
@@ -58,7 +58,7 @@
         Allow from all
     </Directory>
 
-    WSGIScriptAlias /mds /opt/sana/apache/django.wsgi
+    WSGIScriptAlias /mds /var/www/wsgi/mds.wsgi
     <Directory /opt/sana/apache>
         Order deny,allow
         Allow from all
